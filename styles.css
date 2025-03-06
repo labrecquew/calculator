@@ -28,12 +28,12 @@ body {
     align-items: end;
 }
 
-.input {
+.old {
     color: grey;
     font-size: 25px;
 }
 
-.output {
+.new {
     color: white;
     font-size: 40px;
 }
