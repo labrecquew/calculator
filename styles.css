@@ -76,7 +76,7 @@ button:hover {
     background-color: #5C5C5F;
 }
 
-.operator {
+.operator, .equal {
     background-color: #FF991C;
 }
 

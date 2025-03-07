@@ -1,13 +1,15 @@
 let numOne = 0;
 let numTwo = 0;
-let operater = '';
+let operator = '';
 let input = [];
-let output = [];
+let operatorPos = 0;
+let operatorList = ['+', '-', 'x', '/']
 const oldNum = document.querySelector('.old')
 const newNum = document.querySelector('.new')
 const numberButtons = document.querySelectorAll('.number');
 const operatorButtons = document.querySelectorAll('.operator');
 const specialButtons = document.querySelectorAll('.special');
+const equalButton = document.querySelector('.equal');
 
 numberButtons.forEach(button => {
     button.addEventListener('click', function() {
@@ -16,12 +18,42 @@ numberButtons.forEach(button => {
     })
 })
 
+operatorButtons.forEach(button => {
+    let computedValue = null;
+    button.addEventListener('click', function() {
+        if(operator === '') {
+                numOne = parseInt(input.join(''));
+                operator = button.textContent;
+                input.push(operator);
+                operatorPos = input.length - 1;
+                populateNewNum();
+                emptyOldNum();
+        }
+        else if (!operatorList.includes(input[input.length - 1])) {
+            populateOldNum();
+            numTwo = parseInt(input.slice(operatorPos + 1).join(''));
+            computedValue = operate(numOne, numTwo, operator);
+            input = []
+            input = Array.from(String(computedValue), Number)
+            numOne = parseInt(input.join(''));
+            operator = button.textContent;
+            input.push(operator);
+            operatorPos = input.length -1;
+            populateNewNum();
+        }
+    })
+})
+
 function populateNewNum() {
-    newNum.textContent = parseInt(input.join(''));
+    newNum.textContent = input.join('');
 }
 
 function populateOldNum() {
     oldNum.textContent = newNum.textContent;
+}
+
+function emptyOldNum() {
+    oldNum.textContent = '';
 }
 
 function operate(num1, num2, operation) {
@@ -33,7 +65,7 @@ function operate(num1, num2, operation) {
         case '-':
             result = subtract(num1, num2);
             break;
-        case '*':
+        case 'x':
             result = multiply(num1, num2);
             break;
         case '/':
