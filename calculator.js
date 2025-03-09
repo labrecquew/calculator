@@ -1,92 +1,90 @@
-let numOne = 0;
-let numTwo = 0;
-let operator = '';
-let input = [];
-let operatorPos = 0;
-let operatorList = ['+', '-', 'x', '/']
-const oldNum = document.querySelector('.old')
-const newNum = document.querySelector('.new')
-const numberButtons = document.querySelectorAll('.number');
-const operatorButtons = document.querySelectorAll('.operator');
-const specialButtons = document.querySelectorAll('.special');
-const equalButton = document.querySelector('.equal');
-
-numberButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        input.push(parseInt(button.textContent));
-        populateNewNum();
-    })
-})
-
-operatorButtons.forEach(button => {
-    let computedValue = null;
-    button.addEventListener('click', function() {
-        if(operator === '') {
-                numOne = parseInt(input.join(''));
-                operator = button.textContent;
-                input.push(operator);
-                operatorPos = input.length - 1;
-                populateNewNum();
-                emptyOldNum();
+document.addEventListener("DOMContentLoaded", function () {
+    const display = document.querySelector(".display");
+    let numOne = "";
+    let numTwo = "";
+    let operator = "";
+    let resultDisplayed = false;
+    
+    function operate(num1, num2, operation) {
+        let result = null;
+        switch(operation) {
+            case '+':
+                result = add(num1, num2);
+                break;
+            case '-':
+                result = subtract(num1, num2);
+                break;
+            case '*':
+                result = multiply(num1, num2);
+                break;
+            case '/':
+                result = num2 === 0 ? "Error" : divide(num1, num2);
+                break;
         }
-        else if (!operatorList.includes(input[input.length - 1])) {
-            populateOldNum();
-            numTwo = parseInt(input.slice(operatorPos + 1).join(''));
-            computedValue = operate(numOne, numTwo, operator);
-            input = []
-            input = Array.from(String(computedValue), Number)
-            numOne = parseInt(input.join(''));
-            operator = button.textContent;
-            input.push(operator);
-            operatorPos = input.length -1;
-            populateNewNum();
-        }
-    })
-})
-
-function populateNewNum() {
-    newNum.textContent = input.join('');
-}
-
-function populateOldNum() {
-    oldNum.textContent = newNum.textContent;
-}
-
-function emptyOldNum() {
-    oldNum.textContent = '';
-}
-
-function operate(num1, num2, operation) {
-    let result = null;
-    switch(operation) {
-        case '+':
-            result = add(num1, num2);
-            break;
-        case '-':
-            result = subtract(num1, num2);
-            break;
-        case 'x':
-            result = multiply(num1, num2);
-            break;
-        case '/':
-            result = divide(num1, num2);
-            break;
+        return result !== "Error" ? parseFloat(result.toFixed(12)) : result;
     }
-    return result;
-}
 
-function add(a, b) {
-    return a + b;
-}
-
-function subtract(a, b) {
-    return a - b;
-}
-
-function multiply(a, b) {
-    return a * b;
-}
-
-function divide(a, b) {
-    return a / b;
-}
+    function add(a, b) { return a + b; }
+    function subtract(a, b) { return a - b; }
+    function multiply(a, b) { return a * b; }
+    function divide(a, b) { return a / b; }
+    
+    document.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", function () {
+            const value = this.textContent;
+            
+            if (!isNaN(value) || value === ".") {
+                if (resultDisplayed) {
+                    numOne = value;
+                    numTwo = "";
+                    operator = "";
+                    resultDisplayed = false;
+                } else if (!operator) {
+                    numOne += value;
+                } else {
+                    numTwo += value;
+                }
+            } else if (["+", "-", "*", "/"].includes(value)) {
+                if (numOne && !numTwo) {
+                    operator = value;
+                    resultDisplayed = false;
+                } else if (numOne && numTwo) {
+                    numOne = operate(parseFloat(numOne), parseFloat(numTwo), operator).toString();
+                    numTwo = "";
+                    operator = value;
+                    resultDisplayed = false;
+                }
+            } else if (value === "=") {
+                if (numOne && numTwo && operator) {
+                    numOne = operate(parseFloat(numOne), parseFloat(numTwo), operator).toString();
+                    numTwo = "";
+                    operator = "";
+                    resultDisplayed = true;
+                }
+            } else if (value === "C") {
+                numOne = "";
+                numTwo = "";
+                operator = "";
+                resultDisplayed = false;
+            } else if (value === "🔙") {
+                if (numTwo) {
+                    numTwo = numTwo.slice(0, -1);
+                } else if (operator) {
+                    operator = "";
+                } else {
+                    numOne = numOne.slice(0, -1);
+                }
+            }
+            
+            display.textContent = numOne + " " + operator + " " + numTwo;
+        });
+    });
+    
+    document.querySelector(".linkedin").addEventListener("click", function () {
+        window.open("https://linkedin.com/in/weston-labrecque-b786742a1", "_blank");
+    });
+    
+    document.querySelector(".github").addEventListener("click", function () {
+        window.open("https://github.com/labrecquew", "_blank");
+    });
+});

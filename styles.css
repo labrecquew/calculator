@@ -26,14 +26,6 @@ body {
     flex-direction: column;
     justify-content: end;
     align-items: end;
-}
-
-.old {
-    color: grey;
-    font-size: 25px;
-}
-
-.new {
     color: white;
     font-size: 40px;
 }
@@ -76,7 +68,7 @@ button:hover {
     background-color: #5C5C5F;
 }
 
-.operator, .equal {
+.operator {
     background-color: #FF991C;
 }
 
